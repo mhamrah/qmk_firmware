@@ -15,7 +15,6 @@
  */
 
 #include QMK_KEYBOARD_H
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "rgb_matrix_user.h"
@@ -24,7 +23,7 @@
 #    include "crab.c"
 #endif
 
-char rgb_str[10];
+char rgb_str[4];
 
 // Custom keycodes and aliases
 enum custom_keycodes {
@@ -63,7 +62,10 @@ const char *get_rgb_mode_name(uint8_t mode) {
         case RGB_MATRIX_HUE_BREATHING:
             return "HueBreathe";
         default:
-            sprintf(rgb_str, "M%d", mode);
+            rgb_str[0] = 'M';
+            rgb_str[1] = mode >= 10 ? '0' + mode / 10 : ' ';
+            rgb_str[2] = '0' + mode % 10;
+            rgb_str[3] = '\0';
             return rgb_str;
     }
 }
@@ -305,8 +307,7 @@ bool oled_task_user() {
 
         // WPM number centered (3 characters)
         oled_set_cursor(1, 7);
-        sprintf(rgb_str, "%03d", get_current_wpm());
-        oled_write(rgb_str, false);
+        oled_write(get_u8_str(get_current_wpm(), '0'), false);
 
         // Line after WPM
         oled_set_cursor(0, 8);

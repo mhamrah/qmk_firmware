@@ -29,13 +29,10 @@
 #define OLED_ROWS OLED_DISPLAY_HEIGHT / 4
 
 static void oled_render_wpm(void) {
-  static char wpm_str[4];
-
-  sprintf(wpm_str, "%03d", get_current_wpm());
   oled_set_cursor(0, 1);
   oled_write_P(PSTR("WPM"), false);
   oled_set_cursor(0, 2);
-  oled_write(wpm_str, false);
+  oled_write(get_u8_str(get_current_wpm(), '0'), false);
 }
 
 static void oled_render_anim_frame(const char **fast_frames, const char **slow_frames, uint8_t frames_len) {
